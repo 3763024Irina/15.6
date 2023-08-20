@@ -1,0 +1,89 @@
+import UIKit
+enum CustomError: Error {
+    case error400
+    case error404
+    case error500
+    case invalidInput
+}
+
+func simulateError(input: Int) throws {
+    guard input >= 1 && input <= 3 else {
+        throw CustomError.invalidInput
+    }
+    
+    switch input {
+    case 1:
+        throw CustomError.error400
+    case 2:
+        throw CustomError.error404
+    case 3:
+        throw CustomError.error500
+    default:
+        break
+    }
+}
+
+let inputValue = Int.random(in: 1...4)
+
+do {
+    try simulateError(input: inputValue)
+} catch CustomError.error400 {
+    print("Ошибка 400: Неверный запрос")
+} catch CustomError.error404 {
+    print("Ошибка 404: Ресурс не найден")
+} catch CustomError.error500 {
+    print("Ошибка 500: Внутренняя ошибка сервера")
+} catch CustomError.invalidInput {
+    print("Неверный ввод")
+} catch {
+    print("Неизвестная ошибка")
+}
+func checkTypes<T, U>(value1: T, value2: U) {
+    if type(of: value1) == type(of: value2) {
+        print("Yes")
+    } else {
+        print("No")
+    }
+}
+
+// Примеры вызова функции
+checkTypes(value1: 42, value2: "Hello")  // Выведет "No"
+checkTypes(value1: 3.14, value2: 3.14)    // Выведет "Yes"
+checkTypes(value1: true, value2: 123)     // Выведет "No"
+
+enum TypeComparisonError: Error {
+    case typesAreDifferent
+    case typesAreSame
+}
+
+func checkAndThrowTypes<T, U>(value1: T, value2: U) throws {
+    if type(of: value1) == type(of: value2) {
+        throw TypeComparisonError.typesAreSame
+    } else {
+        throw TypeComparisonError.typesAreDifferent
+    }
+}
+
+// Примеры вызова функции
+do {
+    try checkAndThrowTypes(value1: 42, value2: "Hello")
+} catch TypeComparisonError.typesAreDifferent {
+    print("Разные типы")
+} catch TypeComparisonError.typesAreSame {
+    print("Одинаковые типы")
+}
+
+do {
+    try checkAndThrowTypes(value1: 3.14, value2: 3.14)
+} catch TypeComparisonError.typesAreDifferent {
+    print("Разные типы")
+} catch TypeComparisonError.typesAreSame {
+    print("Одинаковые типы")
+}
+func compareValues<T: Equatable>(_ value1: T, _ value2: T) -> Bool {
+    return value1 == value2
+}
+
+// Примеры вызова функции
+let result1 = compareValues(42, 42)        // Вернет true
+let result2 = compareValues("Hello", "Hi") // Вернет false
